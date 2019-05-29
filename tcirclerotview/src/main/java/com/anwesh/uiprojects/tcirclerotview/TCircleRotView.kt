@@ -25,6 +25,7 @@ val rFactor : Int = 7
 val startDeg : Float = 90f
 val sweepDeg : Float = 360f
 val deg : Float = 90f
+val delay : Long = 20
 
 fun Int.inverse() : Float = 1f / this
 fun Float.scaleFactor() : Float = Math.floor(this / scDiv).toFloat()
@@ -116,7 +117,7 @@ class TCircleRotView(ctx : Context) : View(ctx) {
             if (animated) {
                 cb()
                 try {
-                    Thread.sleep(50)
+                    Thread.sleep(delay)
                     view.invalidate()
                 } catch(ex : Exception) {
 
@@ -144,7 +145,7 @@ class TCircleRotView(ctx : Context) : View(ctx) {
         private var prev : TCRNode? = null
 
         init {
-
+            addNeighbor()
         }
 
         fun addNeighbor() {
