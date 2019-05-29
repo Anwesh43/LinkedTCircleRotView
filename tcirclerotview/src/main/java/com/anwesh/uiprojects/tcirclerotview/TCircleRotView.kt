@@ -228,4 +228,12 @@ class TCircleRotView(ctx : Context) : View(ctx) {
         }
     }
 
+    companion object {
+
+        fun create(activity: Activity) : TCircleRotView {
+            val view : TCircleRotView = TCircleRotView(activity)
+            activity.setContentView(view)
+            return view
+        }
+    }
 }
