@@ -131,8 +131,52 @@ class TCircleRotView(ctx : Context) : View(ctx) {
 
         fun stop() {
             if (animated) {
-                animated = false 
+                animated = false
             }
+        }
+    }
+
+    data class TCRNode(var i : Int, val state : State = State()) {
+
+        private var next : TCRNode? = null
+        private var prev : TCRNode? = null
+
+        init {
+
+        }
+
+        fun addNeighbor() {
+            if (i < nodes - 1) {
+                next = TCRNode(i + 1)
+                next?.prev = this
+            }
+        }
+
+        fun draw(canvas : Canvas, paint : Paint) {
+            canvas.drawTCRNode(i, state.scale, paint)
+            next?.draw(canvas, paint)
+        }
+
+        fun update(cb : (Int, Float) -> Unit) {
+            state.update {
+                cb(i, it)
+            }
+        }
+
+        fun startUpdating(cb : () -> Unit) {
+            state.startUpdating(cb)
+        }
+
+        fun getNext(dir : Int, cb : () -> Unit) : TCRNode {
+            var curr : TCRNode? = prev
+            if (dir == 1) {
+                curr = next
+            }
+            if (curr != null) {
+                return curr
+            }
+            cb()
+            return this 
         }
     }
 }
