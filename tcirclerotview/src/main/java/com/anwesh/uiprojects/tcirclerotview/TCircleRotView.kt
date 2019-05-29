@@ -204,4 +204,26 @@ class TCircleRotView(ctx : Context) : View(ctx) {
         }
     }
 
+    data class Renderer(var view : TCircleRotView) {
+
+        private val tcr : TCircleRot = TCircleRot(0)
+        private val animator : Animator = Animator(view)
+
+        fun render(canvas : Canvas, paint : Paint) {
+            canvas.drawColor(backColor)
+            tcr.draw(canvas, paint)
+            animator.animate {
+                tcr.update {i, scl ->
+                    animator.stop()
+                }
+            }
+        }
+
+        fun handleTap() {
+            tcr.startUpdating {
+                animator.start()
+            }
+        }
+    }
+
 }
