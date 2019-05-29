@@ -21,9 +21,10 @@ val strokeFactor : Int = 90
 val sizeFactor : Float = 2.9f
 val foreColor : Int = Color.parseColor("#283593")
 val backColor : Int = Color.parseColor("#BDBDBD")
-val rFactor : Int = 5
-val startDeg : Float = -90f
+val rFactor : Int = 7
+val startDeg : Float = 90f
 val sweepDeg : Float = 360f
+val deg : Float = 90f
 
 fun Int.inverse() : Float = 1f / this
 fun Float.scaleFactor() : Float = Math.floor(this / scDiv).toFloat()
@@ -34,3 +35,39 @@ fun Float.mirrorValue(a : Int, b : Int) : Float {
     return (1 - k) * a.inverse() + k * b.inverse()
 }
 fun Float.updateValue(dir : Float, a : Int, b : Int) : Float = mirrorValue(a, b) * dir * scGap
+
+fun Canvas.drawTCircle(size : Float, sc : Float, rotDeg : Float, paint : Paint) {
+    val r : Float = size / rFactor
+    val lineSize : Float = size - 2 * r
+    save()
+    rotate(rotDeg)
+    drawLine(0f, 0f, 0f, -lineSize, paint)
+    save()
+    translate(0f, -lineSize - r)
+    drawArc(RectF(-r, -r, r, r), startDeg, sweepDeg * sc, false,paint)
+    restore()
+    restore()
+}
+
+fun Canvas.drawTCRNode(i : Int, scale : Float, paint : Paint) {
+    val w : Float = width.toFloat()
+    val h : Float = height.toFloat()
+    val gap : Float = h / (nodes + 1)
+    val size = gap / sizeFactor
+    val sc1 : Float = scale.divideScale(0, 2)
+    val sc2 : Float = scale.divideScale(1, 2)
+    var rotDeg : Float = 0f
+    paint.color = foreColor
+    paint.strokeWidth = Math.min(w, h) / strokeFactor
+    paint.strokeCap = Paint.Cap.ROUND
+    paint.style = Paint.Style.STROKE
+    save()
+    translate(w / 2, gap * (i + 1))
+    for (j in 0..(lines - 1)) {
+        val sc : Float = sc2.divideScale(j, lines)
+        rotDeg += deg * sc
+        drawTCircle(size, sc1, rotDeg, paint)
+    }
+    restore()
+}
+
